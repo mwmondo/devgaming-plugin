@@ -19,8 +19,10 @@ calcPayday = (duty, rank) => {
     }
     var payday = 0;
     for (let x = 0; x < 5; x++) {
-        if (parseInt(duty) >= parseInt(settings.time[x])) {
-            var payday = settings.payday[x];
+        if (parseInt(settings.time[x]) !== 0) {
+            if (parseInt(duty) >= parseInt(settings.time[x])) {
+                var payday = settings.payday[x];
+            }
         }
     }
     return payday;
@@ -36,7 +38,8 @@ setPaydays = () => {
             let duty = timeRegex.exec(employee.querySelectorAll('td')[2].innerHTML)[0]
             let rankdiv = employee.parentElement.parentElement.parentElement.previousElementSibling.innerHTML
             let rank = /[0-9]+/.exec(rankdiv)[0]
-    
+            let name = employee.querySelectorAll('td')[0].querySelectorAll('span')[1].innerHTML
+
             if (localStorage.getItem(`devPlugin_${UID}_payday_1_${rank}`) !== null) {
                 if (online < 30) {
                     var payday = 0
@@ -46,6 +49,7 @@ setPaydays = () => {
 
                 let paydayCell = employee.querySelectorAll('td')[5].querySelector('input')
                 paydayCell && (paydayCell.value = payday)
+                console.log(name + ' otrzymuje $' + payday + ' za ' + duty + 'min. duty (' + online + 'min. ogółem)');
             }
         })
     }
