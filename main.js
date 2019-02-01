@@ -18,9 +18,11 @@ calcPayday = (duty, rank) => {
         ]
     }
     var payday = 0;
+    var maxtime = 0;
     for (let x = 0; x < 5; x++) {
-        if (parseInt(settings.time[x]) !== 0) {
-            if (parseInt(duty) >= parseInt(settings.time[x])) {
+        if (parseInt(duty) >= parseInt(settings.time[x])) {
+            if (maxtime < parseInt(settings.time[x])) {
+                var maxtime = parseInt(settings.time[x]);
                 var payday = settings.payday[x];
             }
         }
