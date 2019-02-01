@@ -1,14 +1,69 @@
 let UID = /[0-9]+/.exec(document.querySelector('.maintitle.ipsFilterbar.clear.clearfix>span').innerHTML)[0]
 
-button = () => {
+calcPayday = (duty, rank) => {
+    let settings = {
+        time : [
+            localStorage.getItem(`devPlugin_${UID}_time_1_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_time_2_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_time_3_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_time_4_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_time_5_${rank}`)
+        ], 
+        payday : [
+            localStorage.getItem(`devPlugin_${UID}_payday_1_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_payday_2_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_payday_3_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_payday_4_${rank}`), 
+            localStorage.getItem(`devPlugin_${UID}_payday_5_${rank}`)
+        ]
+    }
+    var payday = 0;
+    for (let x = 0; x < 5; x++) {
+        if (parseInt(duty) >= parseInt(settings.time[x])) {
+            var payday = settings.payday[x];
+        }
+    }
+    return payday;
+}
+
+setPaydays = () => {
+    if (localStorage.getItem(`devPlugin_${UID}`) == "1") {
+        let employees = document.querySelectorAll('#groupsubmit tbody>tr[id]:not(.row_permissions)')
+        let timeRegex = /[0-9]+(?=min)/
+    
+        employees.forEach((employee) => {
+            let online = timeRegex.exec(employee.querySelectorAll('td')[3].innerHTML)[0]
+            let duty = timeRegex.exec(employee.querySelectorAll('td')[2].innerHTML)[0]
+            let rankdiv = employee.parentElement.parentElement.parentElement.previousElementSibling.innerHTML
+            let rank = /[0-9]+/.exec(rankdiv)[0]
+    
+            if (localStorage.getItem(`devPlugin_${UID}_payday_1_${rank}`) !== null) {
+                if (online < 30) {
+                    var payday = 0
+                } else {
+                    var payday = calcPayday(duty, rank)
+                }
+
+                let paydayCell = employee.querySelectorAll('td')[5].querySelector('input')
+                paydayCell && (paydayCell.value = payday)
+            }
+        })
+    }
+}
+
+button = () => {                                       
     let container = document.querySelector(".groupStats").parentElement
     let button = document.createElement("a")
     button.id = "setPaydays"
     button.style = "margin-top: -5px; margin-right: 5px;"
     button.className = "ipsButton right"
     button.innerHTML = "<img src='https://puu.sh/CECnf/900ffc382c.png'> Ustaw wypłaty"
-    // button.addEventListener('click', setPaydays)
+    button.addEventListener('click', setPaydays)
     container.appendChild(button)
+
+    if (localStorage.getItem(`devPlugin_${UID}`) !== "1") {
+        console.log("Nie znaleziono konfiguracji do tego panelu.");
+    }
 }
 
 Settingsmenu = () => {
@@ -52,11 +107,11 @@ Settingsmenu = () => {
                     ${devRole[x].textContent}
                 </div>
                 <div class = "ipsBox table_wrap" style = "text-align: center;">
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_1" value = "${value.time[0]}"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_1" value = "${value.payday[0]}"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_2" value = "${value.time[1]}"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_2" value = "${value.payday[1]}"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_3" value = "${value.time[2]}"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_3" value = "${value.payday[2]}"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_4" value = "${value.time[3]}"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_4" value = "${value.payday[3]}"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_5" value = "${value.time[4]}"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_5" value = "${value.payday[4]}"><br />
+                    <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_1" value ="${value.time[0]}">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_1" value="${value.payday[0]}"><br />
+                    <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_2" value ="${value.time[1]}">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_2" value="${value.payday[1]}"><br />
+                    <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_3" value ="${value.time[2]}">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_3" value="${value.payday[2]}"><br />
+                    <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_4" value ="${value.time[3]}">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_4" value="${value.payday[3]}"><br />
+                    <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_5" value ="${value.time[4]}">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_5" value="${value.payday[4]}"><br />
                 </div>
                 <br />
                 <br />`;
@@ -67,11 +122,11 @@ Settingsmenu = () => {
                     ${devRole[x].textContent}
                 </div>
                 <div class = "ipsBox table_wrap" style = "text-align: center;">
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_1"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_1"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_2"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_2"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_3"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_3"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_4"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_4"><br />
-                    <input type="number" min="30" placeholder = "Czas" name = "time${y}_5"> > <input type="number" placeholder = "Wypłata" name = "payday${y}_5"><br />
+                <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_1">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_1"><br />
+                <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_2">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_2"><br />
+                <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_3">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_3"><br />
+                <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_4">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_4"><br />
+                <input type="number" maxlength="4" max="1440" size="4" min="30" placeholder="Czas" name="time${y}_5">min. <span style="margin-left: 15px; margin-right: 15px;">>=</span> $<input type="number" placeholder="Wypłata" maxlength="4" max="9999" size="4" name="payday${y}_5"><br />
                 </div>
                 <br />
                 <br />`;
@@ -82,15 +137,18 @@ Settingsmenu = () => {
             ${content}
             <br />
             <br />
-            <div style = "text-align: center;">
-                <a class="input_submit" onclick = "settingsForm(${UID})" id = "saveSettings">Zapisz zmiany</a>
-            </div>
         </form>
         <br />
         &copy; <a href = "https://devgaming.pl/user/108693-freeman/">Freeman</a> 2019 | ver. 1.0
         `;
         document.querySelector("div.ipsLayout.ipsLayout_withleft.ipsLayout_smallleft.ipsVerticalTabbed.clearfix").style.display = 'none';
         document.querySelector("div.clearfix.ipsLayout div.ipsBox.table_wrap").appendChild(div);
+        let buttonS = document.createElement("div")
+        buttonS.style.textAlign = "center"
+        buttonS.id = "saveSettings"
+        buttonS.innerHTML = "<a class='input_submit'>Zapisz zmiany</a>"
+        buttonS.addEventListener('click', settingsForm)
+        document.querySelector("form#settingssubmit").appendChild(buttonS);
     }
 }
 
@@ -103,13 +161,13 @@ settings = () => {
     container.appendChild(button)
 }
 
-settingsForm = (UID) => {
+settingsForm = () => {
     var form = document.getElementById('settingssubmit');
 
     for (let x = 0; x < form.elements.length; x++) {
         // console.log(form.elements[x].name);
         let name = form.elements[x].name;
-        // UID GRUPY | TYP | REGUŁA | NUMER RANGI
+        localStorage.setItem(`devPlugin_${UID}`, 1);        
         if (name.substring(0, 4) == 'time') {
             let num = name.substring(6);
             let role = name.substring(4, 5);
@@ -133,5 +191,6 @@ settingsForm = (UID) => {
         }
     }
 }
+
 button();
 settings();
