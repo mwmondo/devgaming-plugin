@@ -1,5 +1,21 @@
 let UID = /[0-9]+/.exec(document.querySelector('.maintitle.ipsFilterbar.clear.clearfix>span').innerHTML)[0]
 
+notification = (content) => {
+    if (document.getElementById('devPlugin_notification') !== null) {
+        document.querySelector("#devPlugin_notification").innerHTML = content;
+    } else {
+        let container = document.querySelector(".groupStats").parentElement
+        let notification = document.createElement("div")
+        notification.className = "message unspecific"
+        notification.id = 'devPlugin_notification'
+        notification.style.marginBottom = "-15px"
+        notification.style.marginTop = "15px"
+        notification.innerHTML = content
+        container.appendChild(notification)
+    
+    }
+}
+
 calcPayday = (duty, rank) => {
     let settings = {
         time : [
@@ -34,13 +50,12 @@ setPaydays = () => {
     if (localStorage.getItem(`devPlugin_${UID}`) == "1") {
         let employees = document.querySelectorAll('#groupsubmit tbody>tr[id]:not(.row_permissions)')
         let timeRegex = /[0-9]+(?=min)/
-    
+
         employees.forEach((employee) => {
             let online = timeRegex.exec(employee.querySelectorAll('td')[3].innerHTML)[0]
             let duty = timeRegex.exec(employee.querySelectorAll('td')[2].innerHTML)[0]
             let rankdiv = employee.parentElement.parentElement.parentElement.previousElementSibling.innerHTML
             let rank = /[0-9]+/.exec(rankdiv)[0]
-            let name = employee.querySelectorAll('td')[0].querySelectorAll('span')[1].innerHTML
 
             if (localStorage.getItem(`devPlugin_${UID}_payday_1_${rank}`) !== null) {
                 if (online < 30) {
@@ -51,13 +66,15 @@ setPaydays = () => {
 
                 let paydayCell = employee.querySelectorAll('td')[5].querySelector('input')
                 paydayCell && (paydayCell.value = payday)
-                console.log(name + ' otrzymuje $' + payday + ' za ' + duty + 'min. duty (' + online + 'min. ogółem)');
             }
         })
+        notification('Wypłaty zostały pomyślnie ustawione')
+    } else {
+        notification('Wypłaty nie mogą zostać ustawione, ponieważ nie znaleziono konfiguracji')
     }
 }
 
-button = () => {                                       
+button = () => {
     let container = document.querySelector(".groupStats").parentElement
     let button = document.createElement("a")
     button.id = "setPaydays"
@@ -68,7 +85,7 @@ button = () => {
     container.appendChild(button)
 
     if (localStorage.getItem(`devPlugin_${UID}`) !== "1") {
-        console.log("Nie znaleziono konfiguracji do tego panelu.");
+        notification("Nie znaleziono konfiguracji do tego panelu.");
     }
 }
 
@@ -145,7 +162,7 @@ Settingsmenu = () => {
             <br />
         </form>
         <br />
-        &copy; <a href = "https://devgaming.pl/user/108693-freeman/">Freeman</a> 2019 | ver. 1.0
+        &copy; <a href = "https://devgaming.pl/user/108693-freeman/">Freeman</a> 2019 | ver. 1.0.2
         `;
         document.querySelector("div.ipsLayout.ipsLayout_withleft.ipsLayout_smallleft.ipsVerticalTabbed.clearfix").style.display = 'none';
         document.querySelector("div.clearfix.ipsLayout div.ipsBox.table_wrap").appendChild(div);
@@ -196,6 +213,7 @@ settingsForm = () => {
             localStorage.setItem(`devPlugin_${UID}_payday_${num}_${role}`, value); 
         }
     }
+    location.reload(); 
 }
 
 button();

@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "devGaming duty",
     "description": "Plugin do przeglądarek ułatwiający ustawianie wypłat na devGaming.pl",
-    "version": "1.0",
+    "version": "1.0.2",
     "permissions": [
         "notifications",
         "activeTab"
