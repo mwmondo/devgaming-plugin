@@ -9,7 +9,7 @@ Plugin do przeglądarek ułatwiający ustawianie wypłat na devGaming.pl
 Przeciągnij dodatek do okna przeglądarki, a następnie potwierdź chęć instalacji.
 
 ## Instalacja na Chrome
-Przejdź do ustawień dodatków (chrome://extensions/), następnie włącz ustawienia programistyczne. Następnie naciśnij przycisk *Załaduj rozpakowane* i wybierz lokalizację plików projektu.
+Dodatek dostępny do pobrania z sklepu chrome [tutaj](https://chrome.google.com/webstore/detail/devgaming-duty/cebaifbggfcaaeifikjkgmplkipdhpcd)
 
 ## Zdjęcia poglądowe
 ![](https://puu.sh/CFN6X/944a5f15c2.png)
